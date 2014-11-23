@@ -25,7 +25,7 @@
   (concat "\\_<" (regexp-quote thing) "\\_>"))
 
 (defun hlt-remove-last-highlight ()
-  (when (and hlt-last-thing hlt-last-buffer)
+  (when (and hlt-last-thing hlt-last-buffer (buffer-live-p hlt-last-buffer))
     (with-current-buffer hlt-last-buffer
       (hi-lock-unface-buffer (hlt-thing-regexp hlt-last-thing)))))
 

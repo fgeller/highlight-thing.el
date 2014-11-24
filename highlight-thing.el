@@ -29,10 +29,13 @@
     (with-current-buffer hlt-last-buffer
       (hi-lock-unface-buffer (hlt-thing-regexp hlt-last-thing)))))
 
+(defun hlt-should-highlight ()
+  (not (eq major-mode 'minibuffer-inactive-mode)))
+
 (defun hlt-highlight-current-thing ()
   (interactive)
   (let* ((thing (thing-at-point 'symbol)))
-    (when thing
+    (when (and (hlt-should-highlight) thing)
       (hlt-remove-last-highlight)
       (highlight-regexp (hlt-thing-regexp thing))
       (setq hlt-last-buffer (current-buffer))

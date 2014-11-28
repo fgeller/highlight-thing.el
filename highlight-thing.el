@@ -15,11 +15,9 @@
 (defvar hlt-highlight-delay-seconds 0.5 "Time to wait before highlighting thing at point.")
 (defvar hlt-timer nil "Timer that triggers highlighting.")
 
-(defun hlt-trigger-timer ()
-  (when hlt-timer (cancel-timer hlt-timer))
-  (when highlight-thing-mode
-    (hlt-highlight-current-thing)
-    (setq hlt-timer (run-with-idle-timer hlt-highlight-delay-seconds t 'hlt-trigger-timer))))
+(defun hlt-highlight-loop ()
+  (cond (highlight-thing-mode (hlt-highlight-current-thing))
+	(t (cancel-timer hlt-timer))))
 
 (defun hlt-thing-regexp (thing)
   (concat "\\_<" (regexp-quote thing) "\\_>"))
@@ -45,6 +43,6 @@
   "Minor mode that highlights things at point"
   nil " hlt" nil
   :global t
-  (hlt-trigger-timer))
+  (setq hlt-timer (run-with-idle-timer hlt-highlight-delay-seconds t 'hlt-highlight-loop)))
 
 (provide 'highlight-thing)

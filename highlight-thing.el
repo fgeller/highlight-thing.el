@@ -18,7 +18,11 @@
 
 (defun hlt-highlight-loop ()
   (cond (highlight-thing-mode (hlt-highlight-current-thing))
-	(t (cancel-timer hlt-timer))))
+	(t (hlt-deactivate-highlight-thing))))
+
+(defun hlt-deactivate-highlight-thing ()
+  (hlt-remove-last-highlight)
+  (when hlt-timer (cancel-timer hlt-timer)))
 
 (defun hlt-thing-regexp (thing)
   (cond ((eq hlt-what-thing 'symbol) (concat "\\_<" (regexp-quote thing) "\\_>"))

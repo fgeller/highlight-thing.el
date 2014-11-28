@@ -10,6 +10,7 @@
 
 (require 'thingatpt)
 
+(defvar hlt-what-thing 'symbol "What kind of thing to highlight. (cf. `thing-at-point')")
 (defvar hlt-last-thing nil "Last highlighted thing.")
 (defvar hlt-last-buffer nil "Buffer where last thing was highlighted.")
 (defvar hlt-highlight-delay-seconds 0.5 "Time to wait before highlighting thing at point.")
@@ -20,7 +21,9 @@
 	(t (cancel-timer hlt-timer))))
 
 (defun hlt-thing-regexp (thing)
-  (concat "\\_<" (regexp-quote thing) "\\_>"))
+  (cond ((eq hlt-what-thing 'symbol) (concat "\\_<" (regexp-quote thing) "\\_>"))
+	((eq hlt-what-thing 'word) (concat "\\<" (regexp-quote thing) "\\>"))
+	(t (regexp-quote thing))))
 
 (defun hlt-remove-last-highlight ()
   (when (and hlt-last-thing hlt-last-buffer (buffer-live-p hlt-last-buffer))
@@ -32,7 +35,7 @@
 
 (defun hlt-highlight-current-thing ()
   (interactive)
-  (let* ((thing (thing-at-point 'symbol)))
+  (let* ((thing (thing-at-point hlt-what-thing)))
     (when (and (hlt-should-highlight) thing)
       (hlt-remove-last-highlight)
       (highlight-regexp (hlt-thing-regexp thing))

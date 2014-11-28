@@ -1,0 +1,29 @@
+* highlight-thing.el
+
+  Global minor mode to highlight a thing under point.
+
+  Similar to =highlight-symbol-mode=, but does not rely on font-lock
+  functionality and does not provide functionality to navigate to different
+  occurrences of the current symbol under point.
+
+  Uses =thingatpt= and =hi-lock= functionality that is included with GNU Emacs.
+
+** Installation
+
+   Basic setup:
+
+   #+begin_src emacs-lisp
+     (require 'highlight-thing)
+     (highlight-thing-mode)
+   #+end_src
+
+   The default is to highlight the symbol under point, but you can customize
+   =hlt-what-thing= to highlight different components. Set the following to only
+   highlight the word under point:
+
+   #+begin_src emacs-lisp
+     (setq hlt-what-thing 'word)
+   #+end_src
+
+   Customize the face =hi-yellow= to change the colors that are used for
+   highlighting.

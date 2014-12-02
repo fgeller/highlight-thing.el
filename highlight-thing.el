@@ -25,10 +25,10 @@
 
 ;;; Commentary:
 
-;; Requires `thingatpt' to identify symbol at point.
-;;
-;; Based on `highlight-symbol-mode', but uses hi-lock functionality rather than
-;; relying on font-lock.
+;; Global minor mode to highlight the current thing under point. Uses built-in
+;; thingatpt and hi-lock functionality to identify the thing under point and
+;; highlight it. Does not require font-lock to be enabled as hi-lock falls back
+;; to overlays.
 
 (require 'thingatpt)
 
@@ -68,10 +68,13 @@
       (setq hlt-last-buffer (current-buffer))
       (setq hlt-last-thing thing))))
 
+;;;###autoload
 (define-minor-mode highlight-thing-mode
   "Minor mode that highlights things at point"
   nil " hlt" nil
-  :global t
+  :global t :group 'highlight-thing
   (setq hlt-timer (run-with-idle-timer hlt-highlight-delay-seconds t 'hlt-highlight-loop)))
 
 (provide 'highlight-thing)
+
+;;; highlight-thing.el ends here

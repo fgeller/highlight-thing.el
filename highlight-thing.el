@@ -34,12 +34,23 @@
 
 (require 'thingatpt)
 
-(defvar hlt-what-thing 'symbol "What kind of thing to highlight. (cf. `thing-at-point')")
-(defvar hlt-last-thing nil "Last highlighted thing.")
-(defvar hlt-last-buffer nil "Buffer where last thing was highlighted.")
-(defvar hlt-highlight-delay-seconds 0.5 "Time to wait before highlighting thing at point.")
-(defvar hlt-timer nil "Timer that triggers highlighting.")
-(defvar hlt-excluded-major-modes nil "List of major modes to exclude from highlighting.")
+(defvar hlt-what-thing 'symbol
+  "What kind of thing to highlight. (cf. `thing-at-point')")
+
+(defvar hlt-last-thing nil
+  "Last highlighted thing.")
+
+(defvar hlt-last-buffer nil
+  "Buffer where last thing was highlighted.")
+
+(defvar hlt-delay-seconds 0.5
+  "Time to wait before highlighting thing at point.")
+
+(defvar hlt-timer nil
+  "Timer that triggers highlighting.")
+
+(defvar hlt-excluded-major-modes nil
+  "List of major modes to exclude from highlighting.")
 
 (defun hlt-highlight-loop ()
   (cond (highlight-thing-mode (hlt-highlight-current-thing))
@@ -77,7 +88,7 @@
   "Minor mode that highlights things at point"
   nil " hlt" nil
   :global t :group 'highlight-thing
-  (setq hlt-timer (run-with-idle-timer hlt-highlight-delay-seconds t 'hlt-highlight-loop)))
+  (setq hlt-timer (run-with-idle-timer hlt-delay-seconds t 'hlt-highlight-loop)))
 
 (provide 'highlight-thing)
 

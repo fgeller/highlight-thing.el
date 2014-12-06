@@ -39,6 +39,7 @@
 (defvar hlt-last-buffer nil "Buffer where last thing was highlighted.")
 (defvar hlt-highlight-delay-seconds 0.5 "Time to wait before highlighting thing at point.")
 (defvar hlt-timer nil "Timer that triggers highlighting.")
+(defvar hlt-excluded-major-modes nil "List of major modes to exclude from highlighting.")
 
 (defun hlt-highlight-loop ()
   (cond (highlight-thing-mode (hlt-highlight-current-thing))
@@ -59,7 +60,8 @@
       (hi-lock-unface-buffer (hlt-thing-regexp hlt-last-thing)))))
 
 (defun hlt-should-highlight ()
-  (not (eq major-mode 'minibuffer-inactive-mode)))
+  (and (not (minibufferp))
+       (not (member major-mode hlt-excluded-major-modes))))
 
 (defun hlt-highlight-current-thing ()
   (interactive)

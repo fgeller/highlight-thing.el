@@ -30,6 +30,8 @@
 ;; highlight it. Does not require font-lock to be enabled as hi-lock falls back
 ;; to overlays.
 
+;; More information: https://github.com/fgeller/highlight-thing.el
+
 (require 'thingatpt)
 
 (defvar hlt-what-thing 'symbol "What kind of thing to highlight. (cf. `thing-at-point')")

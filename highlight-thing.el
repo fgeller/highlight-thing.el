@@ -34,61 +34,63 @@
 
 (require 'thingatpt)
 
-(defvar hlt-what-thing 'symbol
+(defvar highlight-thing-what-thing 'symbol
   "What kind of thing to highlight. (cf. `thing-at-point')")
 
-(defvar hlt-last-thing nil
+(defvar highlight-thing-last-thing nil
   "Last highlighted thing.")
 
-(defvar hlt-last-buffer nil
+(defvar highlight-thing-last-buffer nil
   "Buffer where last thing was highlighted.")
 
-(defvar hlt-delay-seconds 0.5
+(defvar highlight-thing-delay-seconds 0.5
   "Time to wait before highlighting thing at point.")
 
-(defvar hlt-timer nil
+(defvar highlight-thing-timer nil
   "Timer that triggers highlighting.")
 
-(defvar hlt-excluded-major-modes nil
+(defvar highlight-thing-excluded-major-modes nil
   "List of major modes to exclude from highlighting.")
 
-(defun hlt-highlight-loop ()
-  (cond (highlight-thing-mode (hlt-highlight-current-thing))
-	(t (hlt-deactivate-highlight-thing))))
+(defun highlight-thing-loop ()
+  (cond (highlight-thing-mode (highlight-thing-do))
+	(t (highlight-thing-deactivate))))
 
-(defun hlt-deactivate-highlight-thing ()
-  (hlt-remove-last-highlight)
-  (when hlt-timer (cancel-timer hlt-timer)))
+(defun highlight-thing-deactivate ()
+  (highlight-thing-remove-last-highlight)
+  (when highlight-thing-timer (cancel-timer highlight-thing-timer)))
 
-(defun hlt-thing-regexp (thing)
-  (cond ((eq hlt-what-thing 'symbol) (concat "\\_<" (regexp-quote thing) "\\_>"))
-	((eq hlt-what-thing 'word) (concat "\\<" (regexp-quote thing) "\\>"))
+(defun highlight-thing-regexp (thing)
+  (cond ((eq highlight-thing-what-thing 'symbol) (concat "\\_<" (regexp-quote thing) "\\_>"))
+	((eq highlight-thing-what-thing 'word) (concat "\\<" (regexp-quote thing) "\\>"))
 	(t (regexp-quote thing))))
 
-(defun hlt-remove-last-highlight ()
-  (when (and hlt-last-thing hlt-last-buffer (buffer-live-p hlt-last-buffer))
-    (with-current-buffer hlt-last-buffer
-      (hi-lock-unface-buffer (hlt-thing-regexp hlt-last-thing)))))
+(defun highlight-thing-remove-last ()
+  (when (and highlight-thing-last-thing
+	     highlight-thing-last-buffer
+	     (buffer-live-p highlight-thing-last-buffer))
+    (with-current-buffer highlight-thing-last-buffer
+      (hi-lock-unface-buffer (highlight-thing-regexp highlight-thing-last-thing)))))
 
-(defun hlt-should-highlight ()
+(defun highlight-thing-should-highlight ()
   (and (not (minibufferp))
-       (not (member major-mode hlt-excluded-major-modes))))
+       (not (member major-mode highlight-thing-excluded-major-modes))))
 
-(defun hlt-highlight-current-thing ()
+(defun highlight-thing-do ()
   (interactive)
-  (let* ((thing (thing-at-point hlt-what-thing)))
-    (hlt-remove-last-highlight)
-    (when (and (hlt-should-highlight) thing)
-      (highlight-regexp (hlt-thing-regexp thing))
-      (setq hlt-last-buffer (current-buffer))
-      (setq hlt-last-thing thing))))
+  (let* ((thing (thing-at-point highlight-thing-what-thing)))
+    (highlight-thing-remove-last)
+    (when (and (highlight-thing-should-highlight) thing)
+      (highlight-regexp (highlight-thing-regexp thing))
+      (setq highlight-thing-last-buffer (current-buffer))
+      (setq highlight-thing-last-thing thing))))
 
 ;;;###autoload
 (define-minor-mode highlight-thing-mode
   "Minor mode that highlights things at point"
   nil " hlt" nil
   :global t :group 'highlight-thing
-  (setq hlt-timer (run-with-idle-timer hlt-delay-seconds t 'hlt-highlight-loop)))
+  (setq highlight-thing-timer (run-with-idle-timer highlight-thing-delay-seconds t 'highlight-thing-loop)))
 
 (provide 'highlight-thing)
 

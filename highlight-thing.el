@@ -57,7 +57,7 @@
 	(t (highlight-thing-deactivate))))
 
 (defun highlight-thing-deactivate ()
-  (highlight-thing-remove-last-highlight)
+  (highlight-thing-remove-last)
   (when highlight-thing-timer (cancel-timer highlight-thing-timer)))
 
 (defun highlight-thing-regexp (thing)

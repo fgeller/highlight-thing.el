@@ -2,6 +2,8 @@
 
   Global minor mode to highlight the thing under point.
 
+  [[http://melpa.milkbox.net:1337/#/highlight-thing][file:http://melpa.milkbox.net:1337/packages/highlight-thing-badge.svg]]
+
   Similar to =highlight-symbol-mode=, but does not rely on font-lock
   functionality and does not provide functionality to navigate to different
   occurrences of the current symbol under point.

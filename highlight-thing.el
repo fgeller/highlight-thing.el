@@ -40,6 +40,10 @@
 (defvar highlight-thing-limit-to-defun nil
   "Limit highlighting to occurrences in current defun. Relies on `beginning-of-defun` and `end-of-defun`.")
 
+(defface highlight-thing
+  '((t (:inherit 'hi-yellow)))
+  "Face that is used to highlight things.")
+
 (defvar highlight-thing-last-thing nil
   "Last highlighted thing.")
 
@@ -85,7 +89,7 @@
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight) thing)
       (when highlight-thing-limit-to-defun (narrow-to-defun))
-      (highlight-regexp (highlight-thing-regexp thing))
+      (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
       (when highlight-thing-limit-to-defun (widen))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))

@@ -37,3 +37,10 @@
    #+begin_src emacs-lisp
      (setq hlt-delay-seconds 1.5)
    #+end_src
+
+   You can limit the highlighting of things to the current defun via the
+   following setting:
+
+   #+begin_src emacs-lisp
+     (setq highlight-thing-limit-to-defun t)
+   #+end_src

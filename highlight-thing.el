@@ -34,11 +34,17 @@
 
 (require 'thingatpt)
 
-(defvar highlight-thing-what-thing 'symbol
+(defcustom highlight-thing-what-thing 'symbol
   "What kind of thing to highlight. (cf. `thing-at-point')")
 
-(defvar highlight-thing-limit-to-defun nil
+(defcustom highlight-thing-limit-to-defun nil
   "Limit highlighting to occurrences in current defun. Relies on `beginning-of-defun` and `end-of-defun`.")
+
+(defcustom highlight-thing-delay-seconds 0.5
+  "Time to wait before highlighting thing at point.")
+
+(defcustom highlight-thing-excluded-major-modes nil
+  "List of major modes to exclude from highlighting.")
 
 (defface highlight-thing
   '((t (:inherit 'hi-yellow)))
@@ -50,14 +56,8 @@
 (defvar highlight-thing-last-buffer nil
   "Buffer where last thing was highlighted.")
 
-(defvar highlight-thing-delay-seconds 0.5
-  "Time to wait before highlighting thing at point.")
-
 (defvar highlight-thing-timer nil
   "Timer that triggers highlighting.")
-
-(defvar highlight-thing-excluded-major-modes nil
-  "List of major modes to exclude from highlighting.")
 
 (defun highlight-thing-loop ()
   (cond (highlight-thing-mode (highlight-thing-do))

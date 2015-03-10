@@ -37,6 +37,9 @@
 (defvar highlight-thing-what-thing 'symbol
   "What kind of thing to highlight. (cf. `thing-at-point')")
 
+(defvar highlight-thing-limit-to-defun nil
+  "Limit highlighting to occurrences in current defun. Relies on `beginning-of-defun` and `end-of-defun`.")
+
 (defvar highlight-thing-last-thing nil
   "Last highlighted thing.")
 
@@ -81,7 +84,9 @@
   (let* ((thing (thing-at-point highlight-thing-what-thing)))
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight) thing)
+      (when highlight-thing-limit-to-defun (narrow-to-defun))
       (highlight-regexp (highlight-thing-regexp thing))
+      (when highlight-thing-limit-to-defun (widen))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))
 

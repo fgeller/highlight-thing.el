@@ -88,9 +88,10 @@
   (let* ((thing (thing-at-point highlight-thing-what-thing)))
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight) thing)
-      (when highlight-thing-limit-to-defun (narrow-to-defun))
-      (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
-      (when highlight-thing-limit-to-defun (widen))
+      (save-restriction
+        (widen)
+        (when highlight-thing-limit-to-defun (narrow-to-defun))
+        (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))
 

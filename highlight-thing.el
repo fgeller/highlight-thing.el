@@ -35,16 +35,36 @@
 (require 'thingatpt)
 
 (defcustom highlight-thing-what-thing 'symbol
-  "What kind of thing to highlight. (cf. `thing-at-point')")
+  "What kind of thing to highlight. (cf. `thing-at-point')"
+  :type '(choice (const :tag "Symbol" symbol)
+                 (const :tag "Word" word)
+                 (const :tag "Sexp" sexp)
+                 (const :tag "Sentence" sentence)
+                 (const :tag "List" list)
+                 (const :tag "Line" line)
+                 (const :tag "Number" number)
+                 (const :tag "Page" page)
+                 (const :tag "Whitespace" whitespace)
+                 (const :tag "defun" defun)
+                 (const :tag "File name" filename)
+                 (const :tag "URL" url)
+                 (const :tag "Email" email))
+  :group 'highlight-thing)
 
 (defcustom highlight-thing-limit-to-defun nil
-  "Limit highlighting to occurrences in current defun. Relies on `beginning-of-defun` and `end-of-defun`.")
+  "Limit highlighting to occurrences in current defun. Relies on `beginning-of-defun` and `end-of-defun`."
+  :type 'boolean
+  :group 'highlight-thing)
 
 (defcustom highlight-thing-delay-seconds 0.5
-  "Time to wait before highlighting thing at point.")
+  "Seconds to wait before highlighting thing at point."
+  :type 'float
+  :group 'highlight-thing)
 
 (defcustom highlight-thing-excluded-major-modes nil
-  "List of major modes to exclude from highlighting.")
+  "List of major modes to exclude from highlighting."
+  :type '(repeat symbol)
+  :group 'highlight-thing)
 
 (defface highlight-thing
   '((t (:inherit 'hi-yellow)))

@@ -105,7 +105,8 @@
 
 (defun highlight-thing-do ()
   (interactive)
-  (let* ((thing (thing-at-point highlight-thing-what-thing)))
+  (let* ((thing (thing-at-point highlight-thing-what-thing))
+         (font-lock-mode nil))
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight) thing)
       (save-restriction

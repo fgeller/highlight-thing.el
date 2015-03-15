@@ -17,7 +17,13 @@
 
    #+begin_src emacs-lisp
      (require 'highlight-thing)
-     (highlight-thing-mode)
+     (global-highlight-thing-mode)
+   #+end_src
+
+   Alternatively you can use the buffer-local version:
+
+   #+begin_src emacs-lisp
+     (add-hook 'prog-mode-hook 'highlight-thing-mode)
    #+end_src
 
    The default is to highlight the symbol under point, but you can customize

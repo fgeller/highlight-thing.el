@@ -120,12 +120,22 @@
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))
 
+(defun highlight-thing-mode-maybe-activate ()
+  (when (highlight-thing-should-highlight-p)
+    (highlight-thing-mode 1)))
+
 ;;;###autoload
 (define-minor-mode highlight-thing-mode
   "Minor mode that highlights things at point"
   nil " hlt" nil
-  :global t :group 'highlight-thing
+  :group 'highlight-thing
   (setq highlight-thing-timer (run-with-idle-timer highlight-thing-delay-seconds t 'highlight-thing-loop)))
+
+;;;###autoload
+(define-globalized-minor-mode global-highlight-thing-mode
+  highlight-thing-mode
+  highlight-thing-mode-maybe-activate
+  :group 'highlight-thing)
 
 (provide 'highlight-thing)
 

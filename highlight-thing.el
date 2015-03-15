@@ -103,6 +103,10 @@
   (and (not (minibufferp))
        (not (member major-mode highlight-thing-excluded-major-modes))))
 
+(defun highlight-thing-should-narrow ()
+  (and highlight-thing-limit-to-defun
+       (bounds-of-thing-at-point 'defun)))
+
 (defun highlight-thing-do ()
   (interactive)
   (let* ((thing (thing-at-point highlight-thing-what-thing))
@@ -111,7 +115,7 @@
     (when (and (highlight-thing-should-highlight) thing)
       (save-restriction
         (widen)
-        (when highlight-thing-limit-to-defun (narrow-to-defun))
+        (when (highlight-thing-should-narrow) (narrow-to-defun))
         (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))

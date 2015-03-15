@@ -99,11 +99,11 @@
     (with-current-buffer highlight-thing-last-buffer
       (hi-lock-unface-buffer (highlight-thing-regexp highlight-thing-last-thing)))))
 
-(defun highlight-thing-should-highlight ()
+(defun highlight-thing-should-highlight-p ()
   (and (not (minibufferp))
        (not (member major-mode highlight-thing-excluded-major-modes))))
 
-(defun highlight-thing-should-narrow ()
+(defun highlight-thing-should-narrow-p ()
   (and highlight-thing-limit-to-defun
        (bounds-of-thing-at-point 'defun)))
 
@@ -112,10 +112,10 @@
   (let* ((thing (thing-at-point highlight-thing-what-thing))
          (font-lock-mode nil))
     (highlight-thing-remove-last)
-    (when (and (highlight-thing-should-highlight) thing)
+    (when (and (highlight-thing-should-highlight-p) thing)
       (save-restriction
         (widen)
-        (when (highlight-thing-should-narrow) (narrow-to-defun))
+        (when (highlight-thing-should-narrow-p) (narrow-to-defun))
         (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))

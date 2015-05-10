@@ -80,8 +80,8 @@
   "Timer that triggers highlighting.")
 
 (defun highlight-thing-loop ()
-  (cond (highlight-thing-mode (highlight-thing-do))
-	(t (highlight-thing-deactivate))))
+  (when highlight-thing-mode
+    (highlight-thing-do)))
 
 (defun highlight-thing-deactivate ()
   (highlight-thing-remove-last)
@@ -125,15 +125,19 @@
     (highlight-thing-mode 1)))
 
 (defun highlight-thing-schedule-timer ()
-  (when highlight-thing-timer (cancel-timer highlight-thing-timer))
-  (setq highlight-thing-timer (run-with-idle-timer highlight-thing-delay-seconds t 'highlight-thing-loop)))
+  (unless highlight-thing-timer
+      (setq highlight-thing-timer
+            (run-with-idle-timer
+             highlight-thing-delay-seconds t 'highlight-thing-loop))))
 
 ;;;###autoload
 (define-minor-mode highlight-thing-mode
   "Minor mode that highlights things at point"
   nil " hlt" nil
   :group 'highlight-thing
-  (highlight-thing-schedule-timer))
+  (if highlight-thing-mode
+      (highlight-thing-schedule-timer)
+    (highlight-thing-remove-last)))
 
 ;;;###autoload
 (define-globalized-minor-mode global-highlight-thing-mode

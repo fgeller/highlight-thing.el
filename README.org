@@ -27,7 +27,7 @@
    #+end_src
 
    The default is to highlight the symbol under point, but you can customize
-   =hlt-what-thing= to highlight different components. Set the following to only
+   =hightlight-thing-what-thing= to highlight different components. Set the following to only
    highlight the word under point:
 
    #+begin_src emacs-lisp

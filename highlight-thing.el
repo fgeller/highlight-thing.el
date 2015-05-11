@@ -68,7 +68,8 @@
 
 (defface highlight-thing
   '((t (:inherit 'hi-yellow)))
-  "Face that is used to highlight things.")
+  "Face that is used to highlight things."
+  :group 'highlight-thing)
 
 (defvar highlight-thing-last-thing nil
   "Last highlighted thing.")

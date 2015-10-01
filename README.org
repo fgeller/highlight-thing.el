@@ -34,6 +34,9 @@
      (setq highlight-thing-what-thing 'word)
    #+end_src
 
+   As an extension to the =thing-at-point= capabilities you can select =region= in
+   which case an active region is used as the thing to highlight (cf. [[https://github.com/fgeller/highlight-thing.el/issues/7][#7]]).
+
    Customize the face =hi-yellow= to change the colors that are used for
    highlighting.
 

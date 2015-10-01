@@ -35,7 +35,10 @@
 (require 'thingatpt)
 
 (defcustom highlight-thing-what-thing 'symbol
-  "What kind of thing to highlight. (cf. `thing-at-point')"
+  "What kind of thing to highlight. (cf. `thing-at-point')
+`region` to highlight other occurrences of the currently active
+region is available in addition to the regular `thing-at-point`
+functionality."
   :type '(choice (const :tag "Symbol" symbol)
                  (const :tag "Word" word)
                  (const :tag "Sexp" sexp)
@@ -48,7 +51,8 @@
                  (const :tag "defun" defun)
                  (const :tag "File name" filename)
                  (const :tag "URL" url)
-                 (const :tag "Email" email))
+                 (const :tag "Email" email)
+                 (const :tag "Region" region))
   :group 'highlight-thing)
 
 (defcustom highlight-thing-limit-to-defun nil
@@ -108,9 +112,17 @@
   (and highlight-thing-limit-to-defun
        (bounds-of-thing-at-point 'defun)))
 
+(defun highlight-thing-get-active-region ()
+  (when (region-active-p)
+    (buffer-substring (point) (mark))))
+
+(defun highlight-thing-get-thing-at-point ()
+  (cond ((eq highlight-thing-what-thing 'region) (highlight-thing-get-active-region))
+        (t (thing-at-point highlight-thing-what-thing))))
+
 (defun highlight-thing-do ()
   (interactive)
-  (let ((thing (thing-at-point highlight-thing-what-thing))
+  (let ((thing (highlight-thing-get-thing-at-point))
         (font-lock-mode nil))
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight-p) thing)

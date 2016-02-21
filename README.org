@@ -53,3 +53,9 @@
    #+begin_src emacs-lisp
      (setq highlight-thing-limit-to-defun t)
    #+end_src
+
+   You can configure the matching of occurrences to be case-sensitive via the following setting:
+
+   #+begin_src emacs-lisp
+     (setq highlight-thing-case-sensitive-p t)
+   #+end_src

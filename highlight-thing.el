@@ -60,6 +60,11 @@ functionality."
   :type 'boolean
   :group 'highlight-thing)
 
+(defcustom highlight-thing-case-sensitive-p nil
+  "Matching occurrences should be case sensitive if non-nil. Falls back to `case-fold-search` when nil."
+  :type 'boolean
+  :group 'highlight-thing)
+
 (defcustom highlight-thing-delay-seconds 0.5
   "Seconds to wait before highlighting thing at point."
   :type 'float
@@ -129,7 +134,8 @@ functionality."
       (save-restriction
         (widen)
         (when (highlight-thing-should-narrow-p) (narrow-to-defun))
-        (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing))
+        (let ((case-fold-search (if highlight-thing-case-sensitive-p nil case-fold-search)))
+          (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))
 

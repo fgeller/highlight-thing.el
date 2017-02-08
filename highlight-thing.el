@@ -65,6 +65,11 @@ functionality."
   :type 'boolean
   :group 'highlight-thing)
 
+(defcustom highlight-thing-exclude-thing-under-point nil
+  "Highlight occurrences of thing under point but thing under point."
+  :type 'boolean
+  :group 'highlight-thing)
+
 (defcustom highlight-thing-delay-seconds 0.5
   "Seconds to wait before highlighting thing at point."
   :type 'float
@@ -125,6 +130,15 @@ functionality."
   (cond ((eq highlight-thing-what-thing 'region) (highlight-thing-get-active-region))
         (t (thing-at-point highlight-thing-what-thing))))
 
+(defun highlight-thing-remove-overlays-at-point (thing)
+  (let* ((bounds (if (region-active-p) (cons (region-beginning) (region-end))
+		   (bounds-of-thing-at-point highlight-thing-what-thing)))
+	 (start (car bounds))
+	 (end (cdr bounds)))
+    (remove-overlays start end 'hi-lock-overlay-regexp (highlight-thing-regexp thing))
+    (remove-overlays start end 'hi-lock-overlay t)
+    (remove-overlays start end 'face 'highlight-thing)))
+
 (defun highlight-thing-do ()
   (interactive)
   (let ((thing (highlight-thing-get-thing-at-point))
@@ -135,7 +149,8 @@ functionality."
         (widen)
         (when (highlight-thing-should-narrow-p) (narrow-to-defun))
         (let ((case-fold-search (if highlight-thing-case-sensitive-p nil case-fold-search)))
-          (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)))
+          (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
+          (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point thing))))
       (setq highlight-thing-last-buffer (current-buffer))
       (setq highlight-thing-last-thing thing))))
 

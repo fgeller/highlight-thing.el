@@ -59,3 +59,11 @@
    #+begin_src emacs-lisp
      (setq highlight-thing-case-sensitive-p t)
    #+end_src
+
+   If you want all the matches highlighted but not the one occurrence
+   at the point itself, you can do so by:
+
+   #+begin_src emacs-lisp
+     ;; Don't highlight the thing at point itself. Default is nil.
+     (setq highlight-thing-exclude-thing-under-point t)
+   #+end_src

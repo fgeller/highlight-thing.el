@@ -85,6 +85,11 @@ functionality."
   :type 'boolean
   :group 'highlight-thing)
 
+(defcustom highlight-thing-ignore-list nil
+  "List of strings that should not be highlighted."
+  :type '(repeat string)
+  :group 'highlight-thing)
+
 (defface highlight-thing
   '((t (:inherit 'hi-yellow)))
   "Face that is used to highlight things."
@@ -139,8 +144,10 @@ functionality."
            (use-region-p))))
 
 (defun highlight-thing-get-thing-at-point ()
-  (if (highlight-thing-should-highlight-region-p) (highlight-thing-get-active-region)
-    (thing-at-point highlight-thing-what-thing)))
+  (let ((thing (if (highlight-thing-should-highlight-region-p) (highlight-thing-get-active-region)
+                 (thing-at-point highlight-thing-what-thing))))
+    (unless (member thing highlight-thing-ignore-list)
+      thing)))
 
 (defun highlight-thing-remove-overlays-at-point (thing)
   (let* ((bounds (if (region-active-p) (cons (region-beginning) (region-end))

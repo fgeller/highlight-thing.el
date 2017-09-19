@@ -74,3 +74,9 @@
    #+begin_src emacs-lisp
      (setq highlight-thing-prefer-active-region t)
    #+end_src
+
+   If you want to prevent highlighting certain strings:
+
+   #+begin_src emacs-lisp
+     (setq highlight-thing-ignore-list '("False" "True"))
+   #+end_src

@@ -1,6 +1,6 @@
 ;;; highlight-thing.el --- Minimalistic minor mode to highlight current thing under point.
 
-;; Copyright (c) 2014-2016 Felix Geller
+;; Copyright (c) 2014-2017 Felix Geller
 
 ;; Author: Felix Geller <fgeller@gmail.com>
 ;; Keywords: highlight thing symbol

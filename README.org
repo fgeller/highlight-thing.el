@@ -67,3 +67,10 @@
      ;; Don't highlight the thing at point itself. Default is nil.
      (setq highlight-thing-exclude-thing-under-point t)
    #+end_src
+
+   If you want to highlight the current region when active or thing at point
+   when inactive:
+
+   #+begin_src emacs-lisp
+     (setq highlight-thing-prefer-active-region t)
+   #+end_src

@@ -115,9 +115,11 @@ functionality."
 (defun highlight-thing-regexp (thing)
   (cond
    ((highlight-thing-should-highlight-region-p) (regexp-quote thing))
+   ((get highlight-thing-what-thing 'highlight-thing-rx-fn)
+    (funcall (get highlight-thing-what-thing 'highlight-thing-rx-fn) thing))
    ((eq highlight-thing-what-thing 'symbol) (concat "\\_<" (regexp-quote thing) "\\_>"))
-	 ((eq highlight-thing-what-thing 'word) (concat "\\<" (regexp-quote thing) "\\>"))
-	 (t (regexp-quote thing))))
+   ((eq highlight-thing-what-thing 'word) (concat "\\<" (regexp-quote thing) "\\>"))
+   (t (regexp-quote thing))))
 
 (defun highlight-thing-remove-last ()
   (when (and highlight-thing-last-regex

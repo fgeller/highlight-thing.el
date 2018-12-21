@@ -80,3 +80,10 @@
    #+begin_src emacs-lisp
      (setq highlight-thing-ignore-list '("False" "True"))
    #+end_src
+
+   If you want to highlight in all visible buffers:
+
+   #+begin_src emacs-lisp
+     (setq highlight-thing-all-visible-buffers-p t)
+   #+end_src
+

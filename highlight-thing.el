@@ -90,6 +90,11 @@ functionality."
   :type '(repeat string)
   :group 'highlight-thing)
 
+(defcustom highlight-thing-all-visible-buffers-p nil
+  "Highlights thing in visible buffers in current frame rather than only the selected one."
+  :type 'boolean
+  :group 'highlight-thing)
+
 (defface highlight-thing
   '((t (:inherit 'hi-yellow)))
   "Face that is used to highlight things."
@@ -100,6 +105,9 @@ functionality."
 
 (defvar highlight-thing-last-buffer nil
   "Buffer where last thing was highlighted.")
+
+(defvar highlight-thing-last-all-visible-buffers-p nil
+  "Whether all visible buffers were highlighted last time.")
 
 (defvar highlight-thing-timer nil
   "Timer that triggers highlighting.")
@@ -122,11 +130,16 @@ functionality."
    (t (regexp-quote thing))))
 
 (defun highlight-thing-remove-last ()
-  (when (and highlight-thing-last-regex
-	           highlight-thing-last-buffer
-	           (buffer-live-p highlight-thing-last-buffer))
-    (with-current-buffer highlight-thing-last-buffer
-      (hi-lock-unface-buffer highlight-thing-last-regex))))
+  (when highlight-thing-last-regex
+    (when (or highlight-thing-all-visible-buffers-p
+	      highlight-thing-last-all-visible-buffers-p)
+      (mapcar 'highlight-thing-remove-last-buffer-do (highlight-thing-list-visible-buffers)))
+    (when (and highlight-thing-last-buffer
+	       (buffer-live-p highlight-thing-last-buffer))
+      (highlight-thing-remove-last-buffer-do highlight-thing-last-buffer))))
+
+(defun highlight-thing-remove-last-buffer-do (buf)
+  (with-current-buffer buf (hi-lock-unface-buffer highlight-thing-last-regex)))
 
 (defun highlight-thing-should-highlight-p ()
   (and (not (minibufferp))
@@ -167,14 +180,20 @@ functionality."
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight-p) thing)
       (let ((case-fold-search (if highlight-thing-case-sensitive-p nil case-fold-search))
-            (regex (highlight-thing-regexp thing)))
-        (save-restriction
-          (widen)
-          (when (highlight-thing-should-narrow-p) (narrow-to-defun))
-          (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
-          (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point thing)))
+            (regex (highlight-thing-regexp thing))
+	    (bufs (if highlight-thing-all-visible-buffers-p (highlight-thing-list-visible-buffers) (list (current-buffer)))))
+	(mapcar 'highlight-thing-buffer-do bufs)
+	(setq highlight-thing-last-all-visible-buffers-p highlight-thing-all-visible-buffers-p)
         (setq highlight-thing-last-buffer (current-buffer))
         (setq highlight-thing-last-regex regex)))))
+
+(defun highlight-thing-buffer-do (buf)
+  (with-current-buffer buf
+    (save-restriction
+      (widen)
+      (when (highlight-thing-should-narrow-p) (narrow-to-defun))
+      (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
+      (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point thing)))))
 
 (defun highlight-thing-mode-maybe-activate ()
   (when (highlight-thing-should-highlight-p)
@@ -185,6 +204,9 @@ functionality."
     (setq highlight-thing-timer
           (run-with-idle-timer
            highlight-thing-delay-seconds t 'highlight-thing-loop))))
+
+(defun highlight-thing-list-visible-buffers ()
+  (mapcar (lambda (w) (window-buffer w)) (window-list)))
 
 ;;;###autoload
 (define-minor-mode highlight-thing-mode

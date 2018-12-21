@@ -115,8 +115,8 @@ functionality."
 (defun highlight-thing-regexp (thing)
   (cond
    ((highlight-thing-should-highlight-region-p) (regexp-quote thing))
-   ((get highlight-thing-what-thing 'highlight-thing-rx-fn)
-    (funcall (get highlight-thing-what-thing 'highlight-thing-rx-fn) thing))
+   ((get highlight-thing-what-thing 'highlight-thing-regex-fn)
+    (funcall (get highlight-thing-what-thing 'highlight-thing-regex-fn) thing))
    ((eq highlight-thing-what-thing 'symbol) (concat "\\_<" (regexp-quote thing) "\\_>"))
    ((eq highlight-thing-what-thing 'word) (concat "\\<" (regexp-quote thing) "\\>"))
    (t (regexp-quote thing))))

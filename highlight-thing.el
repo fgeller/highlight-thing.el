@@ -91,7 +91,7 @@ functionality."
   :group 'highlight-thing)
 
 (defcustom highlight-thing-all-visible-buffers-p nil
-  "Highlights thing in visible buffers in current frame rather than only the selected one."
+  "Highlights thing in visible buffers in all visible frames rather than only the selected one."
   :type 'boolean
   :group 'highlight-thing)
 
@@ -206,7 +206,9 @@ functionality."
            highlight-thing-delay-seconds t 'highlight-thing-loop))))
 
 (defun highlight-thing-list-visible-buffers ()
-  (mapcar (lambda (w) (window-buffer w)) (window-list)))
+  (mapcan (lambda (f)
+	    (mapcar (lambda (w) (window-buffer w)) (window-list f)))
+	  (visible-frame-list)))
 
 ;;;###autoload
 (define-minor-mode highlight-thing-mode

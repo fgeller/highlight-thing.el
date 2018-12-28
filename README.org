@@ -38,7 +38,7 @@
    which case an active region is used as the thing to highlight (cf. [[https://github.com/fgeller/highlight-thing.el/issues/7][#7]]).
 
    [[https://github.com/antoineB][@antoineB]] provided the functionality to use a custom regex function for a
-   thing-at-point via  [[https://github.com/fgeller/highlight-thing.el/pull/18][#18]]. To use it store the custom regex function as the
+   thing-at-point - thanks! For his use case, cf. [[https://github.com/fgeller/highlight-thing.el/pull/18][#18]]. To use it store the custom regex function as the
    property =highlight-thing-regex-fn= on your =thing-at-point=:
 
    #+begin_src emacs-lisp

@@ -60,13 +60,18 @@ functionality."
   :type 'boolean
   :group 'highlight-thing)
 
-(defcustom highlight-thing-narrow-to-region-p nil
-  "Limit highlighting to occurrences in region surrounding lines, e.g. to reduce load in large buffers. Consider `highlight-thing-narrow-region-lines' for customizing the size of the region to narrow to."
+(defcustom highlight-thing-limit-to-region-in-large-buffers-p nil
+  "Limit highlighting to occurrences in surrounding lines in large buffers to reduce load of highlighting. Consider `highlight-thing-narrow-region-lines' for customizing the size of the region to narrow to and `highlight-thing-large-buffer-limit' for when to start narrowing."
   :type 'boolean
   :group 'highlight-thing)
 
 (defcustom highlight-thing-narrow-region-lines 15
-  "Line count to narrow region to. More specifically, the region will be double the given count, extending `highlight-thing-narrow-region-lines' above and below point by the given line count. cf. `highlight-thing-narrow-to-region-p'."
+  "Line count to narrow region to. More specifically, the region will be double the given count, extending `highlight-thing-narrow-region-lines' above and below point by the given line count. cf. `highlight-thing-limit-to-region-in-large-buffers-p'."
+  :type 'integer
+  :group 'highlight-thing)
+
+(defcustom highlight-thing-large-buffer-limit 5000
+  "If `buffer-size' exceeds this character count a buffer is considered large enough to narrow the a region surrounding point before highlighting. cf. `highlight-thing-limit-to-region-in-large-buffers-p'."
   :type 'integer
   :group 'highlight-thing)
 
@@ -159,6 +164,10 @@ functionality."
   (and highlight-thing-limit-to-defun
        (bounds-of-thing-at-point 'defun)))
 
+(defun highlight-thing-should-narrow-to-region-p ()
+  (and highlight-thing-limit-to-region-in-large-buffers-p
+       (> (buffer-size) highlight-thing-large-buffer-limit)))
+
 (defun highlight-thing-narrow-bounds ()
   (let (start end)
     (save-excursion
@@ -216,7 +225,7 @@ functionality."
       (widen)
       (cond ((highlight-thing-should-narrow-to-defun-p)
 	     (narrow-to-defun))
-	    (highlight-thing-narrow-to-region-p
+	    ((highlight-thing-should-narrow-to-region-p)
 	     (let ((bounds (highlight-thing-narrow-bounds)))
 	       (narrow-to-region (car bounds) (cdr bounds)))))
       (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)

@@ -60,6 +60,16 @@ functionality."
   :type 'boolean
   :group 'highlight-thing)
 
+(defcustom highlight-thing-narrow-to-region-p nil
+  "Limit highlighting to occurrences in region surrounding lines, e.g. to reduce load in large buffers. Consider `highlight-thing-narrow-region-lines' for customizing the size of the region to narrow to."
+  :type 'boolean
+  :group 'highlight-thing)
+
+(defcustom highlight-thing-narrow-region-lines 15
+  "Line count to narrow region to. More specifically, the region will be double the given count, extending `highlight-thing-narrow-region-lines' above and below point by the given line count. cf. `highlight-thing-narrow-to-region-p'."
+  :type 'integer
+  :group 'highlight-thing)
+
 (defcustom highlight-thing-case-sensitive-p nil
   "Matching occurrences should be case sensitive if non-nil. Falls back to `case-fold-search` when nil."
   :type 'boolean
@@ -145,9 +155,22 @@ functionality."
   (and (not (minibufferp))
        (not (member major-mode highlight-thing-excluded-major-modes))))
 
-(defun highlight-thing-should-narrow-p ()
+(defun highlight-thing-should-narrow-to-defun-p ()
   (and highlight-thing-limit-to-defun
        (bounds-of-thing-at-point 'defun)))
+
+(defun highlight-thing-narrow-bounds ()
+  (let (start end)
+    (save-excursion
+      (beginning-of-line)
+      (line-move (* -1 highlight-thing-narrow-region-lines) 'no-error)
+      (setq start (point)))
+    (save-excursion
+      (beginning-of-line)
+      (line-move highlight-thing-narrow-region-lines 'no-error)
+      (end-of-line)
+      (setq end (point)))
+    (cons start end)))
 
 (defun highlight-thing-get-active-region ()
   (when (region-active-p)
@@ -191,7 +214,11 @@ functionality."
   (with-current-buffer buf
     (save-restriction
       (widen)
-      (when (highlight-thing-should-narrow-p) (narrow-to-defun))
+      (cond ((highlight-thing-should-narrow-to-defun-p)
+	     (narrow-to-defun))
+	    (highlight-thing-narrow-to-region-p
+	     (let ((bounds (highlight-thing-narrow-bounds)))
+	       (narrow-to-region (car bounds) (cdr bounds)))))
       (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
       (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point thing)))))
 

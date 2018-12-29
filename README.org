@@ -95,3 +95,13 @@
      (setq highlight-thing-all-visible-buffers-p t)
    #+end_src
 
+   If you want to restrict the highlighting to lines surrounding points, e.g. to
+   reduce the load of highlighting in large buffers as in [[https://github.com/fgeller/highlight-thing.el/issues/16][#16]], consider
+   customizing the following variables:
+
+   #+begin_src emacs-lisp
+     (setq highlight-thing-limit-to-region-in-large-buffers-p nil
+	   highlight-thing-narrow-region-lines 15
+	   highlight-thing-large-buffer-limit 5000)
+   #+end_src
+

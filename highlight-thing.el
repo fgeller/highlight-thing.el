@@ -127,8 +127,15 @@ functionality."
 (defvar highlight-thing-timer nil
   "Timer that triggers highlighting.")
 
+(defun highlight-thing-timer-delay-changed-p ()
+  (not (time-equal-p (timer--time highlight-thing-timer)
+					 (time-convert highlight-thing-delay-seconds))))
+
 (defun highlight-thing-loop ()
   (when highlight-thing-mode
+	(when (and highlight-thing-timer
+			   (highlight-thing-timer-delay-changed-p))
+		(timer-set-idle-time highlight-thing-timer highlight-thing-delay-seconds t))
     (highlight-thing-do)))
 
 (defun highlight-thing-regexp (thing)
@@ -232,10 +239,11 @@ functionality."
     (highlight-thing-mode 1)))
 
 (defun highlight-thing-schedule-timer ()
-  (unless highlight-thing-timer
+  (if highlight-thing-timer
+	  (when (highlight-thing-timer-delay-changed-p)
+		(timer-set-idle-time highlight-thing-timer highlight-thing-delay-seconds t))
     (setq highlight-thing-timer
-          (run-with-idle-timer
-           highlight-thing-delay-seconds t 'highlight-thing-loop))))
+          (run-with-idle-timer highlight-thing-delay-seconds t 'highlight-thing-loop))))
 
 (defun highlight-thing-list-visible-buffers ()
   (mapcan (lambda (f)

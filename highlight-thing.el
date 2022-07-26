@@ -131,10 +131,6 @@ functionality."
   (when highlight-thing-mode
     (highlight-thing-do)))
 
-(defun highlight-thing-deactivate ()
-  (highlight-thing-remove-last)
-  (when highlight-thing-timer (cancel-timer highlight-thing-timer)))
-
 (defun highlight-thing-regexp (thing)
   (cond
    ((highlight-thing-should-highlight-region-p) (regexp-quote thing))
@@ -250,7 +246,6 @@ functionality."
 (define-minor-mode highlight-thing-mode
   "Minor mode that highlights things at point"
   :lighter " hlt"
-  :keymap nil
   :group 'highlight-thing
   (if highlight-thing-mode
       (highlight-thing-schedule-timer)

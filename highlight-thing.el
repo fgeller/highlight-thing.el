@@ -151,7 +151,7 @@ functionality."
   (when highlight-thing-last-regex
     (when (or highlight-thing-all-visible-buffers-p
 	      highlight-thing-last-all-visible-buffers-p)
-      (mapcar 'highlight-thing-remove-last-buffer-do (highlight-thing-list-visible-buffers)))
+      (mapc 'highlight-thing-remove-last-buffer-do (highlight-thing-list-visible-buffers)))
     (when (and highlight-thing-last-buffer
 	       (buffer-live-p highlight-thing-last-buffer))
       (highlight-thing-remove-last-buffer-do highlight-thing-last-buffer))))
@@ -199,12 +199,12 @@ functionality."
     (unless (member thing highlight-thing-ignore-list)
       thing)))
 
-(defun highlight-thing-remove-overlays-at-point (thing)
+(defun highlight-thing-remove-overlays-at-point (regex)
   (let* ((bounds (if (region-active-p) (cons (region-beginning) (region-end))
 		               (bounds-of-thing-at-point highlight-thing-what-thing)))
 	       (start (car bounds))
 	       (end (cdr bounds)))
-    (remove-overlays start end 'hi-lock-overlay-regexp (highlight-thing-regexp thing))
+    (remove-overlays start end 'hi-lock-overlay-regexp regex)
     (remove-overlays start end 'hi-lock-overlay t)
     (remove-overlays start end 'face 'highlight-thing)))
 
@@ -214,17 +214,16 @@ functionality."
         (font-lock-mode nil))
     (highlight-thing-remove-last)
     (when (and (highlight-thing-should-highlight-p)
-			   thing
-			   (not (string= "" thing)))
-      (let ((case-fold-search (if highlight-thing-case-sensitive-p nil case-fold-search))
-            (regex (highlight-thing-regexp thing))
+	       thing
+	       (not (string= "" thing)))
+      (let ((regex (highlight-thing-regexp thing))
 	    (bufs (if highlight-thing-all-visible-buffers-p (highlight-thing-list-visible-buffers) (list (current-buffer)))))
-	(mapcar 'highlight-thing-buffer-do bufs)
+	(mapc (lambda (buf) (highlight-thing-buffer-do buf regex)) bufs)
 	(setq highlight-thing-last-all-visible-buffers-p highlight-thing-all-visible-buffers-p)
         (setq highlight-thing-last-buffer (current-buffer))
         (setq highlight-thing-last-regex regex)))))
 
-(defun highlight-thing-buffer-do (buf)
+(defun highlight-thing-buffer-do (buf regex)
   (with-current-buffer buf
     (save-restriction
       (widen)
@@ -233,12 +232,13 @@ functionality."
 	    ((highlight-thing-should-narrow-to-region-p)
 	     (let ((bounds (highlight-thing-narrow-bounds)))
 	       (narrow-to-region (car bounds) (cdr bounds)))))
-	  (highlight-thing-call-highlight-regexp (highlight-thing-regexp thing))
-      (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point thing)))))
+      (highlight-thing-call-highlight-regexp regex)
+      (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point regex)))))
 
 (defun highlight-thing-call-highlight-regexp (regex)
   (unless (string= "" regex)
-	(highlight-regexp regex 'highlight-thing)))
+	(let ((case-fold-search (if highlight-thing-case-sensitive-p nil case-fold-search)))
+	  (highlight-regexp regex 'highlight-thing))))
 
 (defun highlight-thing-mode-maybe-activate ()
   (when (highlight-thing-should-highlight-p)

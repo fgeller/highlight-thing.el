@@ -213,7 +213,9 @@ functionality."
   (let ((thing (highlight-thing-get-thing-at-point))
         (font-lock-mode nil))
     (highlight-thing-remove-last)
-    (when (and (highlight-thing-should-highlight-p) thing)
+    (when (and (highlight-thing-should-highlight-p)
+			   thing
+			   (not (string= "" thing)))
       (let ((case-fold-search (if highlight-thing-case-sensitive-p nil case-fold-search))
             (regex (highlight-thing-regexp thing))
 	    (bufs (if highlight-thing-all-visible-buffers-p (highlight-thing-list-visible-buffers) (list (current-buffer)))))
@@ -231,8 +233,12 @@ functionality."
 	    ((highlight-thing-should-narrow-to-region-p)
 	     (let ((bounds (highlight-thing-narrow-bounds)))
 	       (narrow-to-region (car bounds) (cdr bounds)))))
-      (highlight-regexp (highlight-thing-regexp thing) 'highlight-thing)
+	  (highlight-thing-call-highlight-regexp (highlight-thing-regexp thing))
       (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point thing)))))
+
+(defun highlight-thing-call-highlight-regexp (regex)
+  (unless (string= "" regex)
+	(highlight-regexp regex 'highlight-thing)))
 
 (defun highlight-thing-mode-maybe-activate ()
   (when (highlight-thing-should-highlight-p)

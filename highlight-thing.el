@@ -225,15 +225,16 @@ functionality."
 
 (defun highlight-thing-buffer-do (buf regex)
   (with-current-buffer buf
-    (save-restriction
-      (widen)
-      (cond ((highlight-thing-should-narrow-to-defun-p)
-	     (narrow-to-defun))
-	    ((highlight-thing-should-narrow-to-region-p)
-	     (let ((bounds (highlight-thing-narrow-bounds)))
-	       (narrow-to-region (car bounds) (cdr bounds)))))
-      (highlight-thing-call-highlight-regexp regex)
-      (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point regex)))))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (cond ((highlight-thing-should-narrow-to-defun-p)
+               (narrow-to-defun))
+              ((highlight-thing-should-narrow-to-region-p)
+               (let ((bounds (highlight-thing-narrow-bounds)))
+                 (narrow-to-region (car bounds) (cdr bounds)))))
+        (highlight-thing-call-highlight-regexp regex)
+        (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point regex))))))
 
 (defun highlight-thing-call-highlight-regexp (regex)
   (unless (string= "" regex)

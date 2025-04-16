@@ -234,7 +234,9 @@ functionality."
                (let ((bounds (highlight-thing-narrow-bounds)))
                  (narrow-to-region (car bounds) (cdr bounds)))))
         (highlight-thing-call-highlight-regexp regex)
-        (when highlight-thing-exclude-thing-under-point (highlight-thing-remove-overlays-at-point regex))))))
+        (when (or highlight-thing-exclude-thing-under-point
+		  (region-active-p))
+	  (highlight-thing-remove-overlays-at-point regex))))))
 
 (defun highlight-thing-call-highlight-regexp (regex)
   (unless (string= "" regex)

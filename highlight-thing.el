@@ -157,7 +157,14 @@ functionality."
       (highlight-thing-remove-last-buffer-do highlight-thing-last-buffer))))
 
 (defun highlight-thing-remove-last-buffer-do (buf)
-  (with-current-buffer buf (hi-lock-unface-buffer highlight-thing-last-regex)))
+  (with-current-buffer buf
+    (when hi-lock-interactive-patterns
+      (font-lock-remove-keywords nil hi-lock-interactive-patterns)
+      (setq hi-lock-interactive-patterns nil))
+    (when hi-lock-interactive-lighters
+      (setq hi-lock-interactive-lighters nil))
+    (remove-overlays nil nil 'hi-lock-overlay t)
+    (font-lock-flush)))
 
 (defun highlight-thing-should-highlight-p ()
   (and (not (minibufferp))

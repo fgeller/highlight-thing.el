@@ -11,6 +11,12 @@ occurrences of the current symbol under point.
 No external dependencies, uses `thingatpt` and `hi-lock` functionality that is
 included with GNU Emacs.
 
+`highlight-thing-mode` can conflict with the built-in
+`highlight-symbol-mode`. If both are enabled, built-in commands such as
+`highlight-symbol-at-point` and `unhighlight-regexp` may not work as
+expected. Use one mode at a time, or disable the built-in
+`highlight-symbol-mode` when using `highlight-thing-mode`.
+
 ![Demo](demo.gif)
 
 ## Installation
